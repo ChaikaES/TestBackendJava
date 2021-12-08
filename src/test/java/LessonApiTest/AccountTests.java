@@ -1,11 +1,8 @@
 package LessonApiTest;
 
 import org.junit.jupiter.api.Test;
-
 import static io.restassured.RestAssured.given;
-
 import io.restassured.response.Response;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
