@@ -11,22 +11,26 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
+
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.responseSpecification;
+import static org.example.Endpoints.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
-public class ImageTests extends BaseTest{
-    private final String PATH_TO_IMAGE = "src/test/resources/884422.jpg";
-    String uploadedImageId;
+public class ImageTests extends BaseTest {
     static String encodedFile;
-    MultiPartSpecification base64MultiPartSpec;
-    MultiPartSpecification multiPartSpecWithFile;
     static RequestSpecification requestSpecificationWithAuthAndMultipartImage;
     static RequestSpecification requestSpecificationWithAuthWithBase64;
+    private final String PATH_TO_IMAGE = "src/test/resources/884422.jpg";
+    String uploadedImageId;
+    MultiPartSpecification base64MultiPartSpec;
+    MultiPartSpecification multiPartSpecWithFile;
 
     @BeforeEach
     void beforeTest() {
@@ -81,7 +85,7 @@ public class ImageTests extends BaseTest{
         byte[] byteArray = getFileContent();
         String encodedFile = Base64.getEncoder().encodeToString(byteArray);
         uploadedImageId = given(requestSpecificationWithAuthWithBase64, positiveResponse)
-                .post("https://api.imgur.com/3/image")
+                .post(UPLOAD_IMAGE)
                 .prettyPeek()
                 .then()
                 .extract()
@@ -93,7 +97,7 @@ public class ImageTests extends BaseTest{
     @Test
     void uploadFileImageTest() {
         uploadedImageId = given(requestSpecificationWithAuthAndMultipartImage, positiveResponse)
-                .post("https://api.imgur.com/3/upload")
+                .post(UPLOAD_IMAGE)
                 .prettyPeek()
                 .then()
                 .extract()
@@ -104,12 +108,8 @@ public class ImageTests extends BaseTest{
 
     @AfterEach
     void tearDown() {
-        given()
-                .headers("Authorization", token)
-                .when()
-                .delete("https://api.imgur.com/3/account/{username}/image/{deleteHash}", "testprogmath", uploadedImageId)
-                .prettyPeek()
-                .then()
-                .statusCode(200);
+        given(requestWithAuth, responseSpecification)
+                .delete(DELETE_IMAGE, username, uploadedImageId)
+                .prettyPeek();
     }
 }

@@ -16,6 +16,7 @@ import io.restassured.response.Response;
 
 import java.io.File;
 
+import static org.example.Endpoints.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
@@ -38,11 +39,11 @@ public class AlbumTests extends BaseTest {
     @AfterEach
     void afterEach() {
         given(requestWithAuth, positiveResponse)
-                .delete("https://api.imgur.com/3/account/{username}/image/{deleteHash}", username, firstImageDeleteHash)
+                .delete(DELETE_IMAGE, username, firstImageDeleteHash)
                 .prettyPeek();
 
         given(requestWithAuth, positiveResponse)
-                .delete("https://api.imgur.com/3/album/{albumHash}", albumDeleteHash)
+                .delete(ALBUM_DETAIL, albumDeleteHash)
                 .prettyPeek();
     }
 
@@ -57,7 +58,7 @@ public class AlbumTests extends BaseTest {
                 .build();
 
         Response response = given(requestSpecificationWithAuthAndMultipartImage, positiveResponse)
-                .post("https://api.imgur.com/3/upload")
+                .post(UPLOAD_IMAGE)
                 .prettyPeek()
                 .then()
                 .extract()
@@ -87,7 +88,7 @@ public class AlbumTests extends BaseTest {
                 .build();
 
         Response response = given(requestSpecification, responseSpecification)
-                .post("https://api.imgur.com/3/album")
+                .post(ALBUM_LIST)
                 .prettyPeek()
                 .then()
                 .extract()
@@ -119,7 +120,7 @@ public class AlbumTests extends BaseTest {
                 .build();
 
         given(requestSpecification, responseSpecification)
-                .post("https://api.imgur.com/3/album")
+                .post(ALBUM_LIST)
                 .prettyPeek();
     }
 
@@ -141,7 +142,7 @@ public class AlbumTests extends BaseTest {
                 .build();
 
         given(requestWithAuth, responseSpecification)
-                .get("https://api.imgur.com/3/album/{albumHash}", albumHash)
+                .get(ALBUM_DETAIL, albumHash)
                 .prettyPeek();
     }
 
@@ -152,7 +153,7 @@ public class AlbumTests extends BaseTest {
         albumDeleteHash = hashPair.getDeleteHash();
 
         given(requestWithAuth, positiveResponse)
-                .delete("https://api.imgur.com/3/album/{albumHash}", albumHash)
+                .delete(ALBUM_DETAIL, albumHash)
                 .prettyPeek();
     }
 }

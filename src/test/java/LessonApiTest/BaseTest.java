@@ -28,6 +28,8 @@ public abstract class BaseTest {
     static void beforeAll() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.filters(new AllureRestAssured());
+        RestAssured.baseURI = "https://api.imgur.com/3";
+
         getProperties();
         token = properties.getProperty("token");
         username = properties.getProperty("username");
